@@ -1,0 +1,62 @@
+{
+  "name": "@fenekito/asset-optimizer",
+  "version": "1.0.0",
+  "description": "A package for optimizing images and video files for improved performance.",
+  "keywords": [
+    "media",
+    "convert",
+    "webp",
+    "png",
+    "jpg",
+    "webm",
+    "mp4",
+    "asset",
+    "image",
+    "video",
+    "minify",
+    "optimize",
+    "performance"
+  ],
+  "license": "MIT",
+  "author": "Juan Claudio Caires Pereira <juanccaires@gmail.com>",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "bin": {
+    "asset-optimizer": "dist/cli.cjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "types"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "start": "node dist/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "@vitest/ui": "^4.0.4",
+    "vite": "^7.1.12",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^4.0.4"
+  },
+  "dependencies": {
+    "sharp": "^0.34.4",
+    "svgo": "^4.0.0"
+  },
+  "optionalDependencies": {
+    "mediabunny": "^1.24.2"
+  }
+}

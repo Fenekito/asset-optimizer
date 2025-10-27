@@ -1,0 +1,31 @@
+# Source files
+*.ts
+!types/**/*.d.ts
+
+# Test files
+__tests__/
+*.test.ts
+*.spec.ts
+vitest.config.ts
+
+# Config files
+vite.config.ts
+tsconfig.json
+.gitignore
+
+# Development dependencies
+node_modules/
+
+# Build artifacts (keep dist/)
+src/
+assets/
+test-assets/
+test-output/
+
+# Documentation (keep README.md)
+*.md
+!README.md
+
+# Other
+.github/
+.husky/
