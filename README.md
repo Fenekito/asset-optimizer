@@ -7,13 +7,13 @@ A toolkit for optimizing common static assets from the command line or programma
 ### Global CLI
 
 ```bash
-npm install -g asset-optimizer
+npm install -g @fenekito/asset-optimizer
 ```
 
 ### Local Project (dev dependency)
 
 ```bash
-npm install --save-dev asset-optimizer
+npm install --save-dev @fenekito/asset-optimizer
 ```
 
 ## Usage
@@ -33,7 +33,7 @@ Options:
 ### Programmatic API
 
 ```ts
-import { configure } from "asset-optimizer";
+import { configure } from "@fenekito/asset-optimizer";
 
 const result = await configure("./assets", "./optimized", {
   imageQuality: 75,

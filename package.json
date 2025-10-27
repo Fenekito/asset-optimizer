@@ -58,5 +58,8 @@
   },
   "optionalDependencies": {
     "mediabunny": "^1.24.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
