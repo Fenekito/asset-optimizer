@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { configure, parseArguments, type OptimizeResult } from '../index.js';
+import { configure, parseArguments, type OptimizeResult } from '../src/index.js';
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 

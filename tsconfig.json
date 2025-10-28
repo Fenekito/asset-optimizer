@@ -1,9 +1,11 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    "outDir": "./dist",
+  // File Layout
+  "rootDir": "./src",
+  "outDir": "./dist",
+  "baseUrl": ".",
+
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -11,7 +13,7 @@
     "target": "es2024",
     "types": ["node", "vitest/globals"],
     "paths": {
-      "mediabunny": ["./types/mediabunny"]
+      "mediabunny": ["./src/types/mediabunny"]
     },
     // For nodejs:
     // "lib": ["esnext"],
@@ -42,6 +44,14 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
-  }
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "__tests__"
+  ]
 }

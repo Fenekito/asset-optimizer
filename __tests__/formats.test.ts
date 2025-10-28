@@ -6,7 +6,7 @@ import {
   supportedVectorFormats,
   supportedDataFormats,
   supportedVideoFormats,
-} from '../formats.js';
+} from '../src/formats.js';
 
 describe('formats', () => {
   describe('getDescriptorForExtension', () => {
