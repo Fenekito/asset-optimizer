@@ -1,6 +1,6 @@
 {
   "name": "@fenekito/asset-optimizer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A package for optimizing images and video files for improved performance.",
   "keywords": [
     "media",
