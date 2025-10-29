@@ -55,7 +55,10 @@ describe('Integration Tests with Real Files', () => {
     expect(result.filesScanned).toBeGreaterThan(0);
 
     const outputFile = path.join(testOutputDir, 'image.png');
-    const exists = await fs.stat(outputFile).then(() => true).catch(() => false);
+    const exists = await fs
+      .stat(outputFile)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
   });
 
@@ -64,7 +67,10 @@ describe('Integration Tests with Real Files', () => {
     expect(result.filesScanned).toBeGreaterThan(0);
 
     const outputFile = path.join(testOutputDir, 'image.jpg');
-    const exists = await fs.stat(outputFile).then(() => true).catch(() => false);
+    const exists = await fs
+      .stat(outputFile)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
   });
 
@@ -73,7 +79,10 @@ describe('Integration Tests with Real Files', () => {
     expect(result.filesScanned).toBeGreaterThan(0);
 
     const outputFile = path.join(testOutputDir, 'image.webp');
-    const exists = await fs.stat(outputFile).then(() => true).catch(() => false);
+    const exists = await fs
+      .stat(outputFile)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
   });
 
@@ -85,7 +94,10 @@ describe('Integration Tests with Real Files', () => {
 
     expect(result.filesScanned).toBeGreaterThan(0);
     const outputFile = path.join(testOutputDir, 'image.avif');
-    const exists = await fs.stat(outputFile).then(() => true).catch(() => false);
+    const exists = await fs
+      .stat(outputFile)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
   });
 
@@ -94,7 +106,10 @@ describe('Integration Tests with Real Files', () => {
     expect(result.filesScanned).toBeGreaterThan(0);
 
     const outputFile = path.join(testOutputDir, 'vector.svg');
-    const exists = await fs.stat(outputFile).then(() => true).catch(() => false);
+    const exists = await fs
+      .stat(outputFile)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
   });
 
@@ -104,7 +119,10 @@ describe('Integration Tests with Real Files', () => {
     });
 
     const outputFile = path.join(testOutputDir, 'data.json');
-    const exists = await fs.stat(outputFile).then(() => true).catch(() => false);
+    const exists = await fs
+      .stat(outputFile)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
 
     if (exists) {
@@ -120,7 +138,10 @@ describe('Integration Tests with Real Files', () => {
     expect(result.filesScanned).toBeGreaterThan(0);
 
     const outputFile = path.join(testOutputDir, 'video.mp4');
-    const exists = await fs.stat(outputFile).then(() => true).catch(() => false);
+    const exists = await fs
+      .stat(outputFile)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
   });
 
@@ -129,7 +150,10 @@ describe('Integration Tests with Real Files', () => {
     expect(result.filesScanned).toBeGreaterThan(0);
 
     const outputFile = path.join(testOutputDir, 'video.webm');
-    const exists = await fs.stat(outputFile).then(() => true).catch(() => false);
+    const exists = await fs
+      .stat(outputFile)
+      .then(() => true)
+      .catch(() => false);
     expect(exists).toBe(true);
   });
 

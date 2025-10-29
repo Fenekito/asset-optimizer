@@ -7,8 +7,8 @@ export type SupportedFormat = ImageFormat | VectorFormat | DataFormat | VideoFor
 export type AssetCategory = 'image' | 'vector' | 'data' | 'video';
 
 export interface AssetFormatDescriptor {
-	extension: SupportedFormat;
-	category: AssetCategory;
+  extension: SupportedFormat;
+  category: AssetCategory;
 }
 
 const IMAGE_FORMATS = ['png', 'webp', 'jpg', 'jpeg', 'avif'] as const;
@@ -22,20 +22,20 @@ export const supportedDataFormats: readonly DataFormat[] = DATA_FORMATS;
 export const supportedVideoFormats: readonly VideoFormat[] = VIDEO_FORMATS;
 
 const FORMAT_DESCRIPTORS: AssetFormatDescriptor[] = [
-	...IMAGE_FORMATS.map((extension) => ({ extension, category: 'image' as const })),
-	...VECTOR_FORMATS.map((extension) => ({ extension, category: 'vector' as const })),
-	...DATA_FORMATS.map((extension) => ({ extension, category: 'data' as const })),
-	...VIDEO_FORMATS.map((extension) => ({ extension, category: 'video' as const })),
+  ...IMAGE_FORMATS.map((extension) => ({ extension, category: 'image' as const })),
+  ...VECTOR_FORMATS.map((extension) => ({ extension, category: 'vector' as const })),
+  ...DATA_FORMATS.map((extension) => ({ extension, category: 'data' as const })),
+  ...VIDEO_FORMATS.map((extension) => ({ extension, category: 'video' as const })),
 ];
 
 const lookupByExtension = new Map<string, AssetFormatDescriptor>(
-	FORMAT_DESCRIPTORS.map((descriptor) => [descriptor.extension, descriptor])
+  FORMAT_DESCRIPTORS.map((descriptor) => [descriptor.extension, descriptor])
 );
 
 export function getDescriptorForExtension(extension: string): AssetFormatDescriptor | undefined {
-	return lookupByExtension.get(extension);
+  return lookupByExtension.get(extension);
 }
 
 export function isSupportedFormat(extension: string): extension is SupportedFormat {
-	return lookupByExtension.has(extension);
+  return lookupByExtension.has(extension);
 }

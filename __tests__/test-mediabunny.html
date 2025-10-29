@@ -1,456 +1,471 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediaBunny Video Optimization Test Suite</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-            padding: 20px;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+          sans-serif;
+        background: #f5f5f5;
+        min-height: 100vh;
+        padding: 20px;
+      }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+      }
 
-        h1 {
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 1.8em;
-            font-weight: 600;
-        }
+      h1 {
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 1.8em;
+        font-weight: 600;
+      }
 
-        .subtitle {
-            color: #666;
-            margin-bottom: 24px;
-            font-size: 0.95em;
-        }
+      .subtitle {
+        color: #666;
+        margin-bottom: 24px;
+        font-size: 0.95em;
+      }
 
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 3px;
-            font-size: 0.85em;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 3px;
+        font-size: 0.85em;
+        font-weight: 500;
+        margin-bottom: 20px;
+      }
 
-        .status-badge.checking {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
+      .status-badge.checking {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+      }
 
-        .status-badge.ready {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
+      .status-badge.ready {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
 
-        .status-badge.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+      .status-badge.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
 
-        .upload-section {
-            border: 2px dashed #ddd;
-            border-radius: 4px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 24px;
-            transition: border-color 0.2s ease;
-            cursor: pointer;
-            background: #fafafa;
-        }
+      .upload-section {
+        border: 2px dashed #ddd;
+        border-radius: 4px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 24px;
+        transition: border-color 0.2s ease;
+        cursor: pointer;
+        background: #fafafa;
+      }
 
-        .upload-section:hover {
-            border-color: #0066cc;
-            background: #f0f8ff;
-        }
+      .upload-section:hover {
+        border-color: #0066cc;
+        background: #f0f8ff;
+      }
 
-        .upload-section.dragover {
-            border-color: #0066cc;
-            background: #e6f2ff;
-        }
+      .upload-section.dragover {
+        border-color: #0066cc;
+        background: #e6f2ff;
+      }
 
-        .file-input {
-            display: none;
-        }
+      .file-input {
+        display: none;
+      }
 
-        .btn {
-            background: #0066cc;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 3px;
-            font-size: 0.95em;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            margin: 5px;
-        }
+      .btn {
+        background: #0066cc;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 3px;
+        font-size: 0.95em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        margin: 5px;
+      }
 
-        .btn:hover:not(:disabled) {
-            background: #0052a3;
-        }
+      .btn:hover:not(:disabled) {
+        background: #0052a3;
+      }
 
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
+      .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
 
-        .btn-secondary {
-            background: #6c757d;
-        }
+      .btn-secondary {
+        background: #6c757d;
+      }
 
-        .btn-secondary:hover:not(:disabled) {
-            background: #5a6268;
-        }
+      .btn-secondary:hover:not(:disabled) {
+        background: #5a6268;
+      }
 
-        .video-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 24px 0;
-        }
+      .video-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 24px 0;
+      }
 
-        .video-card {
-            background: #fafafa;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 16px;
-        }
+      .video-card {
+        background: #fafafa;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 16px;
+      }
 
-        .video-card h3 {
-            color: #333;
-            margin-bottom: 12px;
-            font-size: 1em;
-            font-weight: 600;
-        }
+      .video-card h3 {
+        color: #333;
+        margin-bottom: 12px;
+        font-size: 1em;
+        font-weight: 600;
+      }
 
-        video {
-            width: 100%;
-            border-radius: 3px;
-            background: #000;
-            margin-bottom: 12px;
-        }
+      video {
+        width: 100%;
+        border-radius: 3px;
+        background: #000;
+        margin-bottom: 12px;
+      }
 
-        .video-info {
-            background: white;
-            padding: 12px;
-            border-radius: 3px;
-            font-size: 0.85em;
-            border: 1px solid #e0e0e0;
-        }
+      .video-info {
+        background: white;
+        padding: 12px;
+        border-radius: 3px;
+        font-size: 0.85em;
+        border: 1px solid #e0e0e0;
+      }
 
-        .video-info div {
-            margin: 6px 0;
-            display: flex;
-            justify-content: space-between;
-        }
+      .video-info div {
+        margin: 6px 0;
+        display: flex;
+        justify-content: space-between;
+      }
 
-        .video-info strong {
-            color: #333;
-        }
+      .video-info strong {
+        color: #333;
+      }
 
-        .video-info span {
-            color: #666;
-            font-family: 'Courier New', monospace;
-        }
+      .video-info span {
+        color: #666;
+        font-family: 'Courier New', monospace;
+      }
 
-        .progress-bar {
-            width: 100%;
-            height: 24px;
-            background: #e0e0e0;
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
+      .progress-bar {
+        width: 100%;
+        height: 24px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        overflow: hidden;
+        margin: 20px 0;
+      }
 
-        .progress-fill {
-            height: 100%;
-            background: #0066cc;
-            transition: width 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 500;
-            font-size: 0.85em;
-        }
+      .progress-fill {
+        height: 100%;
+        background: #0066cc;
+        transition: width 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 500;
+        font-size: 0.85em;
+      }
 
-        .log-section {
-            background: #f8f9fa;
-            color: #333;
-            padding: 16px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.8em;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 24px;
-            border: 1px solid #e0e0e0;
-        }
+      .log-section {
+        background: #f8f9fa;
+        color: #333;
+        padding: 16px;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.8em;
+        max-height: 300px;
+        overflow-y: auto;
+        margin-top: 24px;
+        border: 1px solid #e0e0e0;
+      }
 
-        .log-entry {
-            margin: 4px 0;
-            padding: 4px;
-        }
+      .log-entry {
+        margin: 4px 0;
+        padding: 4px;
+      }
 
-        .log-entry.info {
-            color: #0066cc;
-        }
+      .log-entry.info {
+        color: #0066cc;
+      }
 
-        .log-entry.success {
-            color: #28a745;
-        }
+      .log-entry.success {
+        color: #28a745;
+      }
 
-        .log-entry.error {
-            color: #dc3545;
-        }
+      .log-entry.error {
+        color: #dc3545;
+      }
 
-        .log-entry.warning {
-            color: #ffc107;
-        }
+      .log-entry.warning {
+        color: #ffc107;
+      }
 
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+      .controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
 
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-        label {
-            font-weight: 500;
-            color: #333;
-            font-size: 0.9em;
-        }
+      label {
+        font-weight: 500;
+        color: #333;
+        font-size: 0.9em;
+      }
 
-        select {
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-size: 0.9em;
-            cursor: pointer;
-            transition: border-color 0.2s ease;
-        }
+      select {
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: border-color 0.2s ease;
+      }
 
-        select:focus {
-            outline: none;
-            border-color: #0066cc;
-        }
+      select:focus {
+        outline: none;
+        border-color: #0066cc;
+      }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin: 20px 0;
-        }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin: 20px 0;
+      }
 
-        .stat-card {
-            background: white;
-            border: 1px solid #e0e0e0;
-            padding: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
+      .stat-card {
+        background: white;
+        border: 1px solid #e0e0e0;
+        padding: 16px;
+        border-radius: 4px;
+        text-align: center;
+      }
 
-        .stat-value {
-            font-size: 1.5em;
-            font-weight: 600;
-            margin: 8px 0;
-            color: #333;
-        }
+      .stat-value {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin: 8px 0;
+        color: #333;
+      }
 
-        .stat-label {
-            font-size: 0.85em;
-            color: #666;
-        }
+      .stat-label {
+        font-size: 0.85em;
+        color: #666;
+      }
 
-        .compression-ratio {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #28a745;
-        }
+      .compression-ratio {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #28a745;
+      }
 
-        .compression-ratio.worse {
-            color: #dc3545;
-        }
+      .compression-ratio.worse {
+        color: #dc3545;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>MediaBunny Video Optimizer</h1>
-        <p class="subtitle">Test video conversion with MediaBunny in the browser</p>
+      <h1>MediaBunny Video Optimizer</h1>
+      <p class="subtitle">Test video conversion with MediaBunny in the browser</p>
 
-        <div id="status-badge" class="status-badge checking">Checking WebCodecs API...</div>
+      <div id="status-badge" class="status-badge checking">Checking WebCodecs API...</div>
 
-        <div class="upload-section" id="uploadSection">
-            <h2>Drop video file here or click to select</h2>
-            <p style="color: #666; margin-top: 10px; font-size: 0.9em;">Supports: MP4, WebM</p>
-            <input type="file" id="fileInput" class="file-input" accept="video/mp4,video/webm">
+      <div class="upload-section" id="uploadSection">
+        <h2>Drop video file here or click to select</h2>
+        <p style="color: #666; margin-top: 10px; font-size: 0.9em">Supports: MP4, WebM</p>
+        <input type="file" id="fileInput" class="file-input" accept="video/mp4,video/webm" />
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="outputFormat">Output Format:</label>
+          <select id="outputFormat">
+            <option value="mp4">MP4</option>
+            <option value="webm">WebM</option>
+          </select>
         </div>
 
-        <div class="controls">
-            <div class="control-group">
-                <label for="outputFormat">Output Format:</label>
-                <select id="outputFormat">
-                    <option value="mp4">MP4</option>
-                    <option value="webm">WebM</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label for="quality">Quality:</label>
-                <select id="quality">
-                    <option value="high">High (5 Mbps)</option>
-                    <option value="medium" selected>Medium (2.5 Mbps)</option>
-                    <option value="low">Low (1 Mbps)</option>
-                </select>
-            </div>
-
-            <button class="btn" id="convertBtn" disabled>Convert Video</button>
-            <button class="btn btn-secondary" id="clearBtn">Clear Results</button>
+        <div class="control-group">
+          <label for="quality">Quality:</label>
+          <select id="quality">
+            <option value="high">High (5 Mbps)</option>
+            <option value="medium" selected>Medium (2.5 Mbps)</option>
+            <option value="low">Low (1 Mbps)</option>
+          </select>
         </div>
 
-        <div class="progress-bar" id="progressBar" style="display: none;">
-            <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
-        </div>
+        <button class="btn" id="convertBtn" disabled>Convert Video</button>
+        <button class="btn btn-secondary" id="clearBtn">Clear Results</button>
+        <button class="btn btn-secondary" id="optimizeAllBtn" disabled>Run Full Optimizer</button>
+      </div>
 
-        <div class="stats-grid" id="statsGrid" style="display: none;">
-            <div class="stat-card">
-                <div class="stat-label">Original Size</div>
-                <div class="stat-value" id="originalSize">-</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Optimized Size</div>
-                <div class="stat-value" id="optimizedSize">-</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Compression</div>
-                <div class="stat-value" id="compressionRatio">-</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Processing Time</div>
-                <div class="stat-value" id="processingTime">-</div>
-            </div>
-        </div>
+      <div class="progress-bar" id="progressBar" style="display: none">
+        <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+      </div>
 
-        <div class="video-container" id="videoContainer"></div>
-
-        <div class="log-section" id="logSection">
-            <div class="log-entry info">Test suite initialized</div>
+      <div class="stats-grid" id="statsGrid" style="display: none">
+        <div class="stat-card">
+          <div class="stat-label">Original Size</div>
+          <div class="stat-value" id="originalSize">-</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-label">Optimized Size</div>
+          <div class="stat-value" id="optimizedSize">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Compression</div>
+          <div class="stat-value" id="compressionRatio">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Processing Time</div>
+          <div class="stat-value" id="processingTime">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Programmatic Result</div>
+          <div class="stat-value" id="programmaticResult">-</div>
+        </div>
+      </div>
+
+      <div class="video-container" id="videoContainer"></div>
+
+      <div class="log-section" id="logSection">
+        <div class="log-entry info">Test suite initialized</div>
+      </div>
     </div>
 
     <script type="module">
-        let mediabunnyModule = null;
-        let selectedFile = null;
+      let mediabunnyModule = null;
+      let selectedFile = null;
+  let optimizerModule = null;
 
-        // Quality presets
-        const QUALITY_PRESETS = {
-            low: 1_000_000,
-            medium: 2_500_000,
-            high: 5_000_000
-        };
+      // Quality presets
+      const QUALITY_PRESETS = {
+        low: 1_000_000,
+        medium: 2_500_000,
+        high: 5_000_000,
+      };
 
-        // Logging
-        function log(message, type = 'info') {
-            const logSection = document.getElementById('logSection');
-            const entry = document.createElement('div');
-            entry.className = `log-entry ${type}`;
-            const timestamp = new Date().toLocaleTimeString();
-            entry.textContent = `[${timestamp}] ${message}`;
-            logSection.appendChild(entry);
-            logSection.scrollTop = logSection.scrollHeight;
+      // Logging
+      function log(message, type = 'info') {
+        const logSection = document.getElementById('logSection');
+        const entry = document.createElement('div');
+        entry.className = `log-entry ${type}`;
+        const timestamp = new Date().toLocaleTimeString();
+        entry.textContent = `[${timestamp}] ${message}`;
+        logSection.appendChild(entry);
+        logSection.scrollTop = logSection.scrollHeight;
+      }
+
+      // Format bytes
+      function formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+      }
+
+      // Check WebCodecs API
+      function checkWebCodecs() {
+        const statusBadge = document.getElementById('status-badge');
+
+        if (typeof VideoEncoder === 'undefined' || typeof VideoDecoder === 'undefined') {
+          statusBadge.textContent = 'WebCodecs API not available';
+          statusBadge.className = 'status-badge error';
+          log(
+            'WebCodecs API not detected. Please use a compatible browser (Chrome 94+, Edge 94+)',
+            'error'
+          );
+          return false;
         }
 
-        // Format bytes
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+        statusBadge.textContent = 'WebCodecs API available';
+        statusBadge.className = 'status-badge ready';
+        log('WebCodecs API detected successfully', 'success');
+        return true;
+      }
+
+      // Load MediaBunny
+      async function loadMediaBunny() {
+        try {
+          log('Attempting to load MediaBunny...', 'info');
+
+          // Try to import mediabunny from CDN
+          mediabunnyModule = await import('https://cdn.jsdelivr.net/npm/mediabunny@latest/+esm');
+
+          log('MediaBunny loaded successfully', 'success');
+          return true;
+        } catch (error) {
+          log(`Failed to load MediaBunny: ${error.message}`, 'error');
+          log(
+            'Please ensure MediaBunny is available. You can install it with: npm install mediabunny',
+            'warning'
+          );
+          return false;
         }
+      }
 
-        // Check WebCodecs API
-        function checkWebCodecs() {
-            const statusBadge = document.getElementById('status-badge');
-            
-            if (typeof VideoEncoder === 'undefined' || typeof VideoDecoder === 'undefined') {
-                statusBadge.textContent = 'WebCodecs API not available';
-                statusBadge.className = 'status-badge error';
-                log('WebCodecs API not detected. Please use a compatible browser (Chrome 94+, Edge 94+)', 'error');
-                return false;
-            }
+      // Handle file selection
+      function handleFileSelect(file) {
+        if (!file) return;
 
-            statusBadge.textContent = 'WebCodecs API available';
-            statusBadge.className = 'status-badge ready';
-            log('WebCodecs API detected successfully', 'success');
-            return true;
-        }
+        selectedFile = file;
+        log(`File selected: ${file.name} (${formatBytes(file.size)})`, 'info');
 
-        // Load MediaBunny
-        async function loadMediaBunny() {
-            try {
-                log('Attempting to load MediaBunny...', 'info');
-                
-                // Try to import mediabunny from CDN
-                mediabunnyModule = await import('https://cdn.jsdelivr.net/npm/mediabunny@latest/+esm');
-                
-                log('MediaBunny loaded successfully', 'success');
-                return true;
-            } catch (error) {
-                log(`Failed to load MediaBunny: ${error.message}`, 'error');
-                log('Please ensure MediaBunny is available. You can install it with: npm install mediabunny', 'warning');
-                return false;
-            }
-        }
+        document.getElementById('convertBtn').disabled = false;
+        document.getElementById('optimizeAllBtn').disabled = false;
 
-        // Handle file selection
-        function handleFileSelect(file) {
-            if (!file) return;
+        // Show original video preview
+        displayOriginalVideo(file);
+      }
 
-            selectedFile = file;
-            log(`File selected: ${file.name} (${formatBytes(file.size)})`, 'info');
-            
-            document.getElementById('convertBtn').disabled = false;
-            
-            // Show original video preview
-            displayOriginalVideo(file);
-        }
+      // Display original video
+      function displayOriginalVideo(file) {
+        const container = document.getElementById('videoContainer');
+        container.innerHTML = '';
 
-        // Display original video
-        function displayOriginalVideo(file) {
-            const container = document.getElementById('videoContainer');
-            container.innerHTML = '';
-
-            const card = document.createElement('div');
-            card.className = 'video-card';
-            card.innerHTML = `
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.innerHTML = `
                 <h3>Original Video</h3>
                 <video controls src="${URL.createObjectURL(file)}"></video>
                 <div class="video-info">
@@ -459,130 +474,137 @@
                     <div><strong>Size:</strong> <span>${formatBytes(file.size)}</span></div>
                 </div>
             `;
-            container.appendChild(card);
+        container.appendChild(card);
+      }
+
+      // Convert video using MediaBunny
+      async function convertVideo() {
+        if (!selectedFile || !mediabunnyModule) return;
+
+        const outputFormat = document.getElementById('outputFormat').value;
+        const qualityPreset = document.getElementById('quality').value;
+        const bitrate = QUALITY_PRESETS[qualityPreset];
+
+        log(
+          `Starting conversion to ${outputFormat.toUpperCase()} with ${qualityPreset} quality...`,
+          'info'
+        );
+
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        progressBar.style.display = 'block';
+        progressFill.style.width = '10%';
+        progressFill.textContent = 'Initializing...';
+
+        document.getElementById('convertBtn').disabled = true;
+
+        const startTime = performance.now();
+
+        try {
+          const {
+            Input,
+            Output,
+            Conversion,
+            ALL_FORMATS,
+            BlobSource,
+            BufferTarget,
+            Mp4OutputFormat,
+            WebMOutputFormat,
+          } = mediabunnyModule;
+
+          progressFill.style.width = '20%';
+          progressFill.textContent = 'Creating input...';
+
+          const input = new Input({
+            formats: ALL_FORMATS,
+            source: new BlobSource(selectedFile),
+          });
+
+          progressFill.style.width = '30%';
+          progressFill.textContent = 'Creating output...';
+
+          const output = new Output({
+            format: outputFormat === 'webm' ? new WebMOutputFormat() : new Mp4OutputFormat(),
+            target: new BufferTarget(),
+          });
+
+          progressFill.style.width = '40%';
+          progressFill.textContent = 'Initializing conversion...';
+
+          const conversion = await Conversion.init({
+            input,
+            output,
+            video: {
+              bitrate: bitrate,
+            },
+            audio: {
+              bitrate: bitrate,
+            },
+          });
+
+          if (!conversion || conversion.isValid === false) {
+            throw new Error('MediaBunny could not initialize conversion');
+          }
+
+          progressFill.style.width = '60%';
+          progressFill.textContent = 'Converting...';
+          log('Executing conversion...', 'info');
+
+          await conversion.execute();
+
+          progressFill.style.width = '90%';
+          progressFill.textContent = 'Finalizing...';
+
+          const outputBuffer = output.target?.buffer;
+          if (!outputBuffer) {
+            throw new Error('MediaBunny did not produce output');
+          }
+
+          progressFill.style.width = '100%';
+          progressFill.textContent = 'Complete!';
+
+          const endTime = performance.now();
+          const processingTime = ((endTime - startTime) / 1000).toFixed(2);
+
+          const outputBlob = new Blob([outputBuffer], {
+            type: outputFormat === 'webm' ? 'video/webm' : 'video/mp4',
+          });
+
+          log(`Conversion completed in ${processingTime}s`, 'success');
+          log(`Output size: ${formatBytes(outputBlob.size)}`, 'info');
+
+          displayResults(outputBlob, outputFormat, processingTime);
+          await integrateOptimizerRun(outputBlob);
+
+          setTimeout(() => {
+            progressBar.style.display = 'none';
+            progressFill.style.width = '0%';
+          }, 2000);
+        } catch (error) {
+          log(`Conversion failed: ${error.message}`, 'error');
+          progressBar.style.display = 'none';
+          alert('Conversion failed: ' + error.message);
+        } finally {
+          document.getElementById('convertBtn').disabled = false;
         }
+      }
 
-        // Convert video using MediaBunny
-        async function convertVideo() {
-            if (!selectedFile || !mediabunnyModule) return;
+      function gatherLogMessages(messages = []) {
+        return messages.join('\n');
+      }
 
-            const outputFormat = document.getElementById('outputFormat').value;
-            const qualityPreset = document.getElementById('quality').value;
-            const bitrate = QUALITY_PRESETS[qualityPreset];
+      // Display results
+      function displayResults(outputBlob, format, processingTime) {
+        const container = document.getElementById('videoContainer');
 
-            log(`Starting conversion to ${outputFormat.toUpperCase()} with ${qualityPreset} quality...`, 'info');
+        const card = document.createElement('div');
+        card.className = 'video-card';
 
-            const progressBar = document.getElementById('progressBar');
-            const progressFill = document.getElementById('progressFill');
-            progressBar.style.display = 'block';
-            progressFill.style.width = '10%';
-            progressFill.textContent = 'Initializing...';
+        const outputUrl = URL.createObjectURL(outputBlob);
+        const downloadUrl = outputUrl;
+        const filename = selectedFile.name.replace(/\.[^/.]+$/, '') + '.' + format;
 
-            document.getElementById('convertBtn').disabled = true;
-
-            const startTime = performance.now();
-
-            try {
-                const {
-                    Input,
-                    Output,
-                    Conversion,
-                    ALL_FORMATS,
-                    BlobSource,
-                    BufferTarget,
-                    Mp4OutputFormat,
-                    WebMOutputFormat,
-                } = mediabunnyModule;
-
-                progressFill.style.width = '20%';
-                progressFill.textContent = 'Creating input...';
-
-                const input = new Input({
-                    formats: ALL_FORMATS,
-                    source: new BlobSource(selectedFile),
-                });
-
-                progressFill.style.width = '30%';
-                progressFill.textContent = 'Creating output...';
-
-                const output = new Output({
-                    format: outputFormat === 'webm' ? new WebMOutputFormat() : new Mp4OutputFormat(),
-                    target: new BufferTarget(),
-                });
-
-                progressFill.style.width = '40%';
-                progressFill.textContent = 'Initializing conversion...';
-
-                const conversion = await Conversion.init({
-                    input,
-                    output,
-                    video: {
-                        bitrate: bitrate,
-                    },
-                    audio: {
-                        bitrate: bitrate,
-                    },
-                });
-
-                if (!conversion || conversion.isValid === false) {
-                    throw new Error('MediaBunny could not initialize conversion');
-                }
-
-                progressFill.style.width = '60%';
-                progressFill.textContent = 'Converting...';
-                log('Executing conversion...', 'info');
-
-                await conversion.execute();
-
-                progressFill.style.width = '90%';
-                progressFill.textContent = 'Finalizing...';
-
-                const outputBuffer = output.target?.buffer;
-                if (!outputBuffer) {
-                    throw new Error('MediaBunny did not produce output');
-                }
-
-                progressFill.style.width = '100%';
-                progressFill.textContent = 'Complete!';
-
-                const endTime = performance.now();
-                const processingTime = ((endTime - startTime) / 1000).toFixed(2);
-
-                const outputBlob = new Blob([outputBuffer], { 
-                    type: outputFormat === 'webm' ? 'video/webm' : 'video/mp4' 
-                });
-
-                log(`Conversion completed in ${processingTime}s`, 'success');
-                log(`Output size: ${formatBytes(outputBlob.size)}`, 'info');
-
-                displayResults(outputBlob, outputFormat, processingTime);
-
-                setTimeout(() => {
-                    progressBar.style.display = 'none';
-                    progressFill.style.width = '0%';
-                }, 2000);
-
-            } catch (error) {
-                log(`Conversion failed: ${error.message}`, 'error');
-                progressBar.style.display = 'none';
-                alert('Conversion failed: ' + error.message);
-            } finally {
-                document.getElementById('convertBtn').disabled = false;
-            }
-        }
-
-        // Display results
-        function displayResults(outputBlob, format, processingTime) {
-            const container = document.getElementById('videoContainer');
-            
-            const card = document.createElement('div');
-            card.className = 'video-card';
-            
-            const outputUrl = URL.createObjectURL(outputBlob);
-            const downloadUrl = outputUrl;
-            const filename = selectedFile.name.replace(/\.[^/.]+$/, '') + '.' + format;
-
-            card.innerHTML = `
+        card.innerHTML = `
                 <h3>Optimized Video</h3>
                 <video controls src="${outputUrl}"></video>
                 <div class="video-info">
@@ -592,86 +614,144 @@
                 </div>
                 <button class="btn" onclick="downloadVideo('${downloadUrl}', '${filename}')">Download</button>
             `;
-            container.appendChild(card);
+        container.appendChild(card);
 
-            // Update stats
-            const originalSize = selectedFile.size;
-            const optimizedSize = outputBlob.size;
-            const compression = ((1 - optimizedSize / originalSize) * 100).toFixed(1);
+        // Update stats
+        const originalSize = selectedFile.size;
+        const optimizedSize = outputBlob.size;
+        const compression = ((1 - optimizedSize / originalSize) * 100).toFixed(1);
 
-            document.getElementById('statsGrid').style.display = 'grid';
-            document.getElementById('originalSize').textContent = formatBytes(originalSize);
-            document.getElementById('optimizedSize').textContent = formatBytes(optimizedSize);
-            
-            const compressionEl = document.getElementById('compressionRatio');
-            const compressionValue = compression > 0 ? `-${compression}%` : `+${Math.abs(compression)}%`;
-            compressionEl.textContent = compressionValue;
-            compressionEl.className = compression > 0 ? 'compression-ratio' : 'compression-ratio worse';
-            
-            document.getElementById('processingTime').textContent = processingTime + 's';
+        document.getElementById('statsGrid').style.display = 'grid';
+        document.getElementById('originalSize').textContent = formatBytes(originalSize);
+        document.getElementById('optimizedSize').textContent = formatBytes(optimizedSize);
+
+        const compressionEl = document.getElementById('compressionRatio');
+        const compressionValue =
+          compression > 0 ? `-${compression}%` : `+${Math.abs(compression)}%`;
+        compressionEl.textContent = compressionValue;
+        compressionEl.className = compression > 0 ? 'compression-ratio' : 'compression-ratio worse';
+
+        document.getElementById('processingTime').textContent = processingTime + 's';
+      }
+
+      async function loadOptimizerModule() {
+        if (optimizerModule) {
+          return optimizerModule;
         }
 
-        // Download video
-        window.downloadVideo = function(url, filename) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            log(`Downloaded: ${filename}`, 'success');
-        };
-
-        // Clear results
-        function clearResults() {
-            document.getElementById('videoContainer').innerHTML = '';
-            document.getElementById('statsGrid').style.display = 'none';
-            document.getElementById('convertBtn').disabled = true;
-            selectedFile = null;
-            log('Results cleared', 'info');
+        try {
+          log('Loading asset optimizer module...', 'info');
+          optimizerModule = await import('./optimizer-runner.js');
+          log('Asset optimizer module loaded', 'success');
+        } catch (error) {
+          log(`Failed to load optimizer module: ${error.message}`, 'error');
+          throw error;
         }
 
-        // Setup event listeners
-        document.getElementById('fileInput').addEventListener('change', (e) => {
-            handleFileSelect(e.target.files[0]);
-        });
+        return optimizerModule;
+      }
 
-        const uploadSection = document.getElementById('uploadSection');
-        uploadSection.addEventListener('click', () => {
-            document.getElementById('fileInput').click();
-        });
-
-        // Drag and drop
-        uploadSection.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadSection.classList.add('dragover');
-        });
-
-        uploadSection.addEventListener('dragleave', () => {
-            uploadSection.classList.remove('dragover');
-        });
-
-        uploadSection.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadSection.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file && (file.type === 'video/mp4' || file.type === 'video/webm')) {
-                handleFileSelect(file);
-            } else {
-                alert('Please drop a valid video file (MP4 or WebM)');
-            }
-        });
-
-        document.getElementById('convertBtn').addEventListener('click', convertVideo);
-        document.getElementById('clearBtn').addEventListener('click', clearResults);
-
-        // Initialize
-        async function init() {
-            const hasWebCodecs = checkWebCodecs();
-            if (hasWebCodecs) {
-                await loadMediaBunny();
-            }
+      async function runOptimizerFromBrowser() {
+        if (!selectedFile) {
+          alert('Select a video before running the optimizer.');
+          return;
         }
 
-        init();
+        try {
+          const module = await loadOptimizerModule();
+          const summary = await module.runOptimizer();
+          document.getElementById('programmaticResult').textContent = summary.summary.totalsLine;
+          log('Full optimizer run completed successfully', 'success');
+          if (summary.warnings.length > 0) {
+            summary.warnings.forEach((warning) => log(warning, 'warning'));
+          }
+        } catch (error) {
+          log(`Programmatic optimizer run failed: ${error.message}`, 'error');
+          alert('Optimizer run failed: ' + error.message);
+        }
+      }
+
+      async function integrateOptimizerRun(outputBlob) {
+        const module = await loadOptimizerModule();
+        try {
+          log('Running full optimizer suite programmatically...', 'info');
+          const summary = await module.runOptimizer();
+          log('Programmatic optimizer run complete', 'success');
+          document.getElementById('programmaticResult').textContent = summary.summary.totalsLine;
+          if (summary.warnings.length > 0) {
+            summary.warnings.forEach((warning) => log(warning, 'warning'));
+          }
+          return summary;
+        } catch (error) {
+          log(`Programmatic optimizer run failed: ${error.message}`, 'error');
+          document.getElementById('programmaticResult').textContent = 'Failed';
+          throw error;
+        }
+      }
+
+      // Download video
+      window.downloadVideo = function (url, filename) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        log(`Downloaded: ${filename}`, 'success');
+      };
+
+      // Clear results
+      function clearResults() {
+        document.getElementById('videoContainer').innerHTML = '';
+        document.getElementById('statsGrid').style.display = 'none';
+        document.getElementById('convertBtn').disabled = true;
+        selectedFile = null;
+        document.getElementById('optimizeAllBtn').disabled = true;
+        log('Results cleared', 'info');
+      }
+
+      // Setup event listeners
+      document.getElementById('fileInput').addEventListener('change', (e) => {
+        handleFileSelect(e.target.files[0]);
+      });
+
+      const uploadSection = document.getElementById('uploadSection');
+      uploadSection.addEventListener('click', () => {
+        document.getElementById('fileInput').click();
+      });
+
+      // Drag and drop
+      uploadSection.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadSection.classList.add('dragover');
+      });
+
+      uploadSection.addEventListener('dragleave', () => {
+        uploadSection.classList.remove('dragover');
+      });
+
+      uploadSection.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadSection.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file && (file.type === 'video/mp4' || file.type === 'video/webm')) {
+          handleFileSelect(file);
+        } else {
+          alert('Please drop a valid video file (MP4 or WebM)');
+        }
+      });
+
+      document.getElementById('convertBtn').addEventListener('click', convertVideo);
+      document.getElementById('clearBtn').addEventListener('click', clearResults);
+  document.getElementById('optimizeAllBtn').addEventListener('click', runOptimizerFromBrowser);
+
+      // Initialize
+      async function init() {
+        const hasWebCodecs = checkWebCodecs();
+        if (hasWebCodecs) {
+          await loadMediaBunny();
+        }
+      }
+
+      init();
     </script>
-</body>
+  </body>
 </html>

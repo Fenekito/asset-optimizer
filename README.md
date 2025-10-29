@@ -25,6 +25,7 @@ asset-optimizer --input ./assets --output ./optimized
 ```
 
 Options:
+
 - `--input, -i` — Input folder path (required)
 - `--output, -o` — Output folder path (required)
 - `--quality, -q` — Image quality (1-100, default 80)
@@ -33,27 +34,31 @@ Options:
 ### Programmatic API
 
 ```ts
-import { configure } from "@fenekito/asset-optimizer";
+import { configure } from '@fenekito/asset-optimizer';
 
-const result = await configure("./assets", "./optimized", {
+const result = await configure('./assets', './optimized', {
   imageQuality: 75,
   verbose: true,
   onWarning: (message) => console.warn(message),
 });
 
 console.log(result);
+console.log(result.summary.totalsLine);
+console.log(result.summary.processedLine);
+console.log(result.summary.destinationLine);
 ```
 
-`configure` returns totals, counts, and any warnings emitted during optimization.
+`configure` returns raw totals, counts, and any warnings emitted during optimization, along with
+CLI-equivalent summary strings in `result.summary` for easy reporting.
 
 ## Supported Asset Types
 
-| Category | Extensions | Notes |
-| --- | --- | --- |
-| Raster images | png, jpg, jpeg, webp, avif | Processed with Sharp (mozjpeg/png/webp/avif tuning) |
-| Vector graphics | svg | Minified using SVGO multipass |
-| Data files | json | Re-serialized to drop whitespace |
-| Video (experimental) | mp4, webm | Requires [`mediabunny`](https://www.npmjs.com/package/mediabunny) and a WebCodecs-enabled runtime; otherwise a warning is emitted |
+| Category             | Extensions                 | Notes                                                                                                                             |
+| -------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Raster images        | png, jpg, jpeg, webp, avif | Processed with Sharp (mozjpeg/png/webp/avif tuning)                                                                               |
+| Vector graphics      | svg                        | Minified using SVGO multipass                                                                                                     |
+| Data files           | json                       | Re-serialized to drop whitespace                                                                                                  |
+| Video (experimental) | mp4, webm                  | Requires [`mediabunny`](https://www.npmjs.com/package/mediabunny) and a WebCodecs-enabled runtime; otherwise a warning is emitted |
 
 Unsupported files are copied through unmodified.
 

@@ -7,9 +7,11 @@ The asset-optimizer package includes a comprehensive test suite with unit tests,
 ## Test Files
 
 ### 1. `__tests__/formats.test.ts` - Format Detection Tests
+
 Tests the format detection and classification system.
 
 **Coverage:**
+
 - ✅ Format descriptor lookups for all supported types
 - ✅ Supported format validation
 - ✅ Image format arrays (PNG, WebP, JPG, JPEG, AVIF)
@@ -21,9 +23,11 @@ Tests the format detection and classification system.
 **Run:** `npm run test -- formats`
 
 ### 2. `__tests__/index.test.ts` - Unit Tests
+
 Tests core library functions with mocked dependencies.
 
 **Coverage:**
+
 - ✅ CLI argument parsing
 - ✅ Quality parameter clamping
 - ✅ Input validation
@@ -33,9 +37,11 @@ Tests core library functions with mocked dependencies.
 **Run:** `npm run test -- index`
 
 ### 3. `__tests__/integration.test.ts` - Real File Tests
+
 Tests actual optimization of real files in the `test-assets/` directory.
 
 **Test Assets:**
+
 - `image.png` - PNG image optimization
 - `image.jpg` - JPEG optimization
 - `image.webp` - WebP optimization
@@ -46,6 +52,7 @@ Tests actual optimization of real files in the `test-assets/` directory.
 - `video.webm` - WebM video handling
 
 **Coverage:**
+
 - ✅ PNG image optimization
 - ✅ JPG image optimization
 - ✅ WebP image optimization
@@ -60,9 +67,11 @@ Tests actual optimization of real files in the `test-assets/` directory.
 **Run:** `npm run test -- integration`
 
 ### 4. `__tests__/video.browser.test.ts` - Browser Video Tests
+
 Tests video optimization workflow using mediabunny with WebCodecs API simulation.
 
 **Coverage:**
+
 - ✅ WebCodecs API detection
 - ✅ Video codec configuration
 - ✅ Audio codec configuration
@@ -79,6 +88,7 @@ Tests video optimization workflow using mediabunny with WebCodecs API simulation
 ## Running Tests
 
 ### All Tests
+
 ```bash
 npm run test          # Run in watch mode
 npm run test:run      # Run once and exit
@@ -86,6 +96,7 @@ npm run test:ui       # Open interactive UI
 ```
 
 ### Specific Test File
+
 ```bash
 npm run test -- formats
 npm run test -- index
@@ -94,6 +105,7 @@ npm run test -- video.browser
 ```
 
 ### With Coverage
+
 ```bash
 npm run test:run -- --coverage
 ```
@@ -101,6 +113,7 @@ npm run test:run -- --coverage
 ## Test Configuration
 
 Tests are configured in `vitest.config.ts`:
+
 - **Environment:** Node.js
 - **Globals:** Vitest global functions enabled
 - **Plugins:** vite-plugin-dts for declaration generation
@@ -109,18 +122,21 @@ Tests are configured in `vitest.config.ts`:
 ## Key Test Patterns
 
 ### Error Handling
+
 - AVIF encoding failures gracefully fall back to WebP
 - Image compression errors are logged as warnings
 - SVG optimization failures don't crash the process
 - Video optimization skips gracefully when WebCodecs unavailable
 
 ### Assertions
+
 - File existence checks after optimization
 - Size comparisons (original vs optimized)
 - Metrics validation (files processed, warnings collected)
 - Format-specific result verification
 
 ### Mocking
+
 - External libraries mocked at module level
 - File system operations use real files from `test-assets/`
 - WebCodecs APIs mocked in browser tests
@@ -158,10 +174,12 @@ The `video.browser.test.ts` file simulates a browser environment and tests the m
 ## Known Limitations
 
 ### AVIF Support
+
 - AVIF encoding requires system libavif support
 - Falls back to WebP if AVIF not available
 
 ### Video Optimization
+
 - Requires WebCodecs API (browser or Node.js with compat)
 - mediabunny is optional (warnings if not available)
 - Videos are currently copied when WebCodecs unavailable

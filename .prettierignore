@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+build/
+dist/
+
+# Coverage reports
+coverage/
+
+# Test artifacts
+__tests__/test-assets/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated files
+*.d.ts
+*.cjs
+*.mjs

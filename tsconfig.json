@@ -1,11 +1,10 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-  // File Layout
-  "rootDir": "./src",
-  "outDir": "./dist",
-  "baseUrl": ".",
-
+    // File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": ".",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -46,12 +45,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "__tests__"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "__tests__"]
 }

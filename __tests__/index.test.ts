@@ -104,6 +104,15 @@ describe('configure', () => {
       filesOptimized: 0,
       warnings: [],
     });
+    expect(result.input).toBe('src');
+    expect(result.output).toBe('dist');
+    expect(path.isAbsolute(result.inputDirectory)).toBe(true);
+    expect(path.isAbsolute(result.outputDirectory)).toBe(true);
+    expect(result.totalSavings).toBe(0);
+    expect(result.totalSavingsPercent).toBe(0);
+    expect(result.summary.totalsLine).toContain('Total:');
+    expect(result.summary.processedLine).toContain('Processed');
+    expect(result.summary.destinationLine).toContain('Optimized assets');
   });
 
   it('handles warnings', async () => {
@@ -112,5 +121,16 @@ describe('configure', () => {
       onWarning: (msg) => warnings.push(msg),
     });
     expect(warnings).toEqual([]);
+    expect(result.summary.destinationLine).toContain('src');
+  });
+
+  it('resets state between runs', async () => {
+    const first = await configure('src', 'dist');
+    const second = await configure('src', 'dist-2');
+
+    expect(first.filesProcessed).toBe(0);
+    expect(second.filesProcessed).toBe(0);
+    expect(second.output).toBe('dist-2');
+    expect(second.summary.destinationLine).toContain('dist-2');
   });
 });
