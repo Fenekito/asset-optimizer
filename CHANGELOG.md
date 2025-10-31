@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1]
+
+### Fixed
+
+- Fixed vite error related to node:fs when using programmatically
+- It's now required to pass true on the `selfReplace` option on the `OptimizeOptions` when doing a self-replace optimization programmatically, with an error being thrown otherwise.
+
 ## [1.2.0]
 
 ### Added

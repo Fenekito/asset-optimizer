@@ -1,4 +1,4 @@
-import { promises as fs } from 'node:fs';
+import fsModule from 'node:fs';
 import * as path from 'node:path';
 import sharp from 'sharp';
 import { optimize as optimizeSvg } from 'svgo';
@@ -19,16 +19,20 @@ import {
 } from './formats.js';
 import { mediaFile } from './file.js';
 
+const fs = fsModule.promises;
+
 type OptimizeOptions = {
   imageQuality?: number;
   verbose?: boolean;
   onWarning?: (message: string) => void;
+  selfReplace?: boolean;
 };
 
 type ResolvedOptions = {
   imageQuality: number;
   verbose: boolean;
   onWarning?: (message: string) => void;
+  selfReplace: boolean;
 };
 
 export type OptimizeSummary = {
@@ -65,6 +69,7 @@ export type ParsedArguments = {
 const DEFAULT_OPTIONS: ResolvedOptions = {
   imageQuality: 80,
   verbose: false,
+  selfReplace: false,
 };
 
 type OptimizationContext = {
@@ -119,6 +124,18 @@ export async function configure(
 
   const resolvedOptions = resolveOptions(opts);
   const context = createOptimizationContext(input, output, resolvedOptions);
+
+  if (context.isSelfReplace && !resolvedOptions.selfReplace) {
+    throw new Error(
+      'Self-replacing mode is disabled. Pass { selfReplace: true } to allow optimizing in place.'
+    );
+  }
+
+  if (!context.isSelfReplace && resolvedOptions.selfReplace) {
+    throw new Error(
+      'Self-replacing mode requires input and output to resolve to the same directory.'
+    );
+  }
   await scanInputFolder(context);
 
   return buildOptimizeResult(context);
@@ -214,6 +231,7 @@ function resolveOptions(opts: OptimizeOptions): ResolvedOptions {
   const resolved: ResolvedOptions = {
     imageQuality: clamp(opts.imageQuality ?? DEFAULT_OPTIONS.imageQuality, 1, 100),
     verbose: opts.verbose ?? DEFAULT_OPTIONS.verbose,
+    selfReplace: opts.selfReplace ?? DEFAULT_OPTIONS.selfReplace,
   };
   if (typeof opts.onWarning === 'function') {
     resolved.onWarning = opts.onWarning;

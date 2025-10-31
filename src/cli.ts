@@ -44,6 +44,7 @@ async function runCli(): Promise<void> {
     const result: OptimizeResult = await configure(input, output, {
       ...(quality !== undefined ? { imageQuality: quality } : {}),
       ...(verbose ? { verbose } : {}),
+      selfReplace,
       onWarning: (message: string) => {
         collectedWarnings.push(message);
       },
