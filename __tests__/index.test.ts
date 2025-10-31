@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { configure, parseArguments, type OptimizeResult } from '../src/index.js';
-import { promises as fs } from 'node:fs';
+import fsModule from 'node:fs';
 import type { Stats } from 'node:fs';
 import * as path from 'node:path';
+
+const fs = fsModule.promises;
 
 // Mock external dependencies
 vi.mock('sharp', () => ({
@@ -37,8 +39,8 @@ vi.mock('mediabunny', () => ({
 }));
 
 // Mock fs operations
-vi.mock('node:fs', () => ({
-  promises: {
+vi.mock('node:fs', () => {
+  const mockFsPromises = {
     readFile: vi.fn(),
     writeFile: vi.fn(),
     mkdir: vi.fn(),
@@ -46,8 +48,14 @@ vi.mock('node:fs', () => ({
     readdir: vi.fn(),
     copyFile: vi.fn(),
     unlink: vi.fn(),
-  },
-}));
+  };
+  return {
+    default: {
+      promises: mockFsPromises,
+    },
+    promises: mockFsPromises,
+  };
+});
 
 describe('parseArguments', () => {
   it('parses basic arguments', () => {
@@ -168,7 +176,7 @@ describe('configure', () => {
     mockFs.readFile.mockResolvedValue(Buffer.from('original'));
     mockFs.writeFile.mockResolvedValue(undefined);
 
-    await configure('src', 'src');
+    await configure('src', 'src', { selfReplace: true });
 
     expect(mockFs.unlink).not.toHaveBeenCalled();
     expect(mockFs.copyFile).not.toHaveBeenCalled();
@@ -180,7 +188,7 @@ describe('configure', () => {
       fileEntries as unknown as Awaited<ReturnType<typeof fs.readdir>>
     );
 
-    await configure('src', 'src');
+    await configure('src', 'src', { selfReplace: true });
 
     expect(mockFs.copyFile).not.toHaveBeenCalled();
   });

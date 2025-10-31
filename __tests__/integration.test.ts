@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { configure } from '../src/index.js';
-import { promises as fs } from 'node:fs';
+import fsModule from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+const fs = fsModule.promises;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testAssetsDir = path.resolve(__dirname, '../test-assets');
