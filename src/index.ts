@@ -53,6 +53,15 @@ export type OptimizeResult = {
   summary: OptimizeSummary;
 };
 
+export type ParsedArguments = {
+  input: string;
+  output: string;
+  quality?: number;
+  verbose: boolean;
+  selfReplace: boolean;
+  skipWarning: boolean;
+};
+
 const DEFAULT_OPTIONS: ResolvedOptions = {
   imageQuality: 80,
   verbose: false,
@@ -63,6 +72,7 @@ type OptimizationContext = {
   providedOutput: string;
   inputFolder: string;
   outputFolder: string;
+  isSelfReplace: boolean;
   options: ResolvedOptions;
   totalOriginalSize: number;
   totalOptimizedSize: number;
@@ -77,11 +87,14 @@ function createOptimizationContext(
   output: string,
   options: ResolvedOptions
 ): OptimizationContext {
+  const inputFolder = path.resolve(process.cwd(), input);
+  const outputFolder = path.resolve(process.cwd(), output);
   return {
     providedInput: input,
     providedOutput: output,
-    inputFolder: path.resolve(process.cwd(), input),
-    outputFolder: path.resolve(process.cwd(), output),
+    inputFolder,
+    outputFolder,
+    isSelfReplace: inputFolder === outputFolder,
     options,
     totalOriginalSize: 0,
     totalOptimizedSize: 0,
@@ -111,17 +124,15 @@ export async function configure(
   return buildOptimizeResult(context);
 }
 
-export function parseArguments(args: string[]): {
-  input: string;
-  output: string;
-  quality?: number;
-  verbose?: boolean;
-} {
-  const result: { input: string; output: string; quality?: number; verbose?: boolean } = {
+export function parseArguments(args: string[]): ParsedArguments {
+  const result: ParsedArguments = {
     input: '',
     output: '',
     verbose: false,
+    selfReplace: false,
+    skipWarning: false,
   };
+  let outputProvided = false;
 
   for (let index = 0; index < args.length; index += 1) {
     const current = args[index];
@@ -136,6 +147,7 @@ export function parseArguments(args: string[]): {
       case '--output':
       case '-o':
         result.output = args[++index] ?? '';
+        outputProvided = true;
         break;
       case '--quality':
       case '-q': {
@@ -150,6 +162,17 @@ export function parseArguments(args: string[]): {
       case '-v':
         result.verbose = true;
         break;
+      case '--self':
+      case '--in-place':
+      case '-s':
+        result.selfReplace = true;
+        break;
+      case '--skip-warning':
+      case '--yes':
+      case '--force':
+      case '-y':
+        result.skipWarning = true;
+        break;
       default:
         if (current.startsWith('-')) {
           throw new Error(`Unknown option: ${current}`);
@@ -160,12 +183,28 @@ export function parseArguments(args: string[]): {
   if (!result.input) {
     throw new Error('Missing required --input option.');
   }
-  if (!result.output) {
-    throw new Error('Missing required --output option.');
+
+  if (result.selfReplace) {
+    if (outputProvided && result.output) {
+      throw new Error('The --self option cannot be used together with --output.');
+    }
+    result.output = result.input;
+  } else {
+    if (!outputProvided || !result.output) {
+      throw new Error('Missing required --output option.');
+    }
   }
 
   if (result.quality !== undefined) {
     result.quality = clamp(result.quality, 1, 100);
+  }
+
+  if (!result.selfReplace) {
+    const resolvedInput = path.resolve(process.cwd(), result.input);
+    const resolvedOutput = path.resolve(process.cwd(), result.output);
+    if (resolvedInput === resolvedOutput) {
+      result.selfReplace = true;
+    }
   }
 
   return result;
@@ -209,6 +248,12 @@ async function ensureInputFolder(context: OptimizationContext): Promise<void> {
 async function prepareOutputFolder(context: OptimizationContext): Promise<void> {
   if (context.options.verbose) {
     console.log(`Preparing output folder: ${context.outputFolder}`);
+    if (context.isSelfReplace) {
+      console.log('Self-replacing mode detected; skipping cleanup of input files.');
+    }
+  }
+  if (context.isSelfReplace) {
+    return;
   }
   await fs.mkdir(context.outputFolder, { recursive: true });
   for (const relPath of context.scannedFiles) {
@@ -559,6 +604,12 @@ async function writeOptimizedAsset(context: OptimizationContext, file: mediaFile
 
 async function copyAsset(context: OptimizationContext, filePath: string): Promise<void> {
   const relativePath = path.relative(context.inputFolder, filePath);
+  if (context.isSelfReplace) {
+    if (context.options.verbose) {
+      console.log(`Skipped copying unsupported file during self-replacement: ${relativePath}`);
+    }
+    return;
+  }
   const destinationPath = path.join(context.outputFolder, relativePath);
   const destinationDir = path.dirname(destinationPath);
   await fs.mkdir(destinationDir, { recursive: true });

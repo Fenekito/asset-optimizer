@@ -19,7 +19,15 @@ export default defineConfig({
       fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
-      external: ['sharp', 'svgo', 'mediabunny', 'node:fs', 'node:path', 'node:url'],
+      external: [
+        'sharp',
+        'svgo',
+        'mediabunny',
+        'node:fs',
+        'node:path',
+        'node:url',
+        'node:readline',
+      ],
     },
     sourcemap: true,
     minify: true,

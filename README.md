@@ -30,6 +30,27 @@ Options:
 - `--output, -o` — Output folder path (required)
 - `--quality, -q` — Image quality (1-100, default 80)
 - `--verbose, -v` — Verbose logging
+- `--self, --in-place, -s` — Perform optimization in place, overwriting files on the same directory.
+- `--skip-warning, --yes, --force, -y` — Skip the interactive confirmation when using `--self`.
+
+Self-replacement usage:
+
+```bash
+# In-place optimization with confirmation prompt
+asset-optimizer -i ./public -s -q 60 -v
+
+# In-place optimization with skipped prompt
+asset-optimizer -i ./public -s -y -q 60
+
+# implicit self-replace (input and output resolve to the same directory)
+asset-optimizer -i ./public -o ./public -y
+```
+
+Notes about self-replacement:
+
+- This is destructive since the original files will be overwritten with optimized versions, make sure that this is what you intend before running it with this flag, having a backup is recommended.
+- The tool will not delete your input files prior to writing; it overwrites files as it processes them.
+- Unsupported files are left untouched in self-replace mode (they are not copied or modified).
 
 ### Programmatic API
 
@@ -50,6 +71,16 @@ console.log(result.summary.destinationLine);
 
 `configure` returns raw totals, counts, and any warnings emitted during optimization, along with
 CLI-equivalent summary strings in `result.summary` for easy reporting.
+
+Programmatic in-place optimization
+
+You can request in-place optimization by passing the same directory for `input` and `output`:
+
+```ts
+await configure('./public', './public', { imageQuality: 60 });
+```
+
+This is destructive and there is no safety prompt at the API level; ensure you have backups or version control.
 
 ## Supported Asset Types
 

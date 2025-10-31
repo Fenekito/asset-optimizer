@@ -335,7 +335,6 @@
 
         <button class="btn" id="convertBtn" disabled>Convert Video</button>
         <button class="btn btn-secondary" id="clearBtn">Clear Results</button>
-        <button class="btn btn-secondary" id="optimizeAllBtn" disabled>Run Full Optimizer</button>
       </div>
 
       <div class="progress-bar" id="progressBar" style="display: none">
@@ -359,10 +358,6 @@
           <div class="stat-label">Processing Time</div>
           <div class="stat-value" id="processingTime">-</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Programmatic Result</div>
-          <div class="stat-value" id="programmaticResult">-</div>
-        </div>
       </div>
 
       <div class="video-container" id="videoContainer"></div>
@@ -375,7 +370,6 @@
     <script type="module">
       let mediabunnyModule = null;
       let selectedFile = null;
-  let optimizerModule = null;
 
       // Quality presets
       const QUALITY_PRESETS = {
@@ -452,7 +446,6 @@
         log(`File selected: ${file.name} (${formatBytes(file.size)})`, 'info');
 
         document.getElementById('convertBtn').disabled = false;
-        document.getElementById('optimizeAllBtn').disabled = false;
 
         // Show original video preview
         displayOriginalVideo(file);
@@ -574,7 +567,6 @@
           log(`Output size: ${formatBytes(outputBlob.size)}`, 'info');
 
           displayResults(outputBlob, outputFormat, processingTime);
-          await integrateOptimizerRun(outputBlob);
 
           setTimeout(() => {
             progressBar.style.display = 'none';
@@ -587,10 +579,6 @@
         } finally {
           document.getElementById('convertBtn').disabled = false;
         }
-      }
-
-      function gatherLogMessages(messages = []) {
-        return messages.join('\n');
       }
 
       // Display results
@@ -634,61 +622,6 @@
         document.getElementById('processingTime').textContent = processingTime + 's';
       }
 
-      async function loadOptimizerModule() {
-        if (optimizerModule) {
-          return optimizerModule;
-        }
-
-        try {
-          log('Loading asset optimizer module...', 'info');
-          optimizerModule = await import('./optimizer-runner.js');
-          log('Asset optimizer module loaded', 'success');
-        } catch (error) {
-          log(`Failed to load optimizer module: ${error.message}`, 'error');
-          throw error;
-        }
-
-        return optimizerModule;
-      }
-
-      async function runOptimizerFromBrowser() {
-        if (!selectedFile) {
-          alert('Select a video before running the optimizer.');
-          return;
-        }
-
-        try {
-          const module = await loadOptimizerModule();
-          const summary = await module.runOptimizer();
-          document.getElementById('programmaticResult').textContent = summary.summary.totalsLine;
-          log('Full optimizer run completed successfully', 'success');
-          if (summary.warnings.length > 0) {
-            summary.warnings.forEach((warning) => log(warning, 'warning'));
-          }
-        } catch (error) {
-          log(`Programmatic optimizer run failed: ${error.message}`, 'error');
-          alert('Optimizer run failed: ' + error.message);
-        }
-      }
-
-      async function integrateOptimizerRun(outputBlob) {
-        const module = await loadOptimizerModule();
-        try {
-          log('Running full optimizer suite programmatically...', 'info');
-          const summary = await module.runOptimizer();
-          log('Programmatic optimizer run complete', 'success');
-          document.getElementById('programmaticResult').textContent = summary.summary.totalsLine;
-          if (summary.warnings.length > 0) {
-            summary.warnings.forEach((warning) => log(warning, 'warning'));
-          }
-          return summary;
-        } catch (error) {
-          log(`Programmatic optimizer run failed: ${error.message}`, 'error');
-          document.getElementById('programmaticResult').textContent = 'Failed';
-          throw error;
-        }
-      }
-
       // Download video
       window.downloadVideo = function (url, filename) {
         const a = document.createElement('a');
@@ -704,7 +637,6 @@
         document.getElementById('statsGrid').style.display = 'none';
         document.getElementById('convertBtn').disabled = true;
         selectedFile = null;
-        document.getElementById('optimizeAllBtn').disabled = true;
         log('Results cleared', 'info');
       }
 
@@ -741,7 +673,6 @@
 
       document.getElementById('convertBtn').addEventListener('click', convertVideo);
       document.getElementById('clearBtn').addEventListener('click', clearResults);
-  document.getElementById('optimizeAllBtn').addEventListener('click', runOptimizerFromBrowser);
 
       // Initialize
       async function init() {

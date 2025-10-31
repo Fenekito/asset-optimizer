@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { configure, parseArguments, type OptimizeResult } from '../src/index.js';
 import { promises as fs } from 'node:fs';
+import type { Stats } from 'node:fs';
 import * as path from 'node:path';
 
 // Mock external dependencies
@@ -55,19 +56,23 @@ describe('parseArguments', () => {
     expect(result).toMatchObject({
       input: 'src',
       output: 'dist',
+      verbose: false,
+      selfReplace: false,
+      skipWarning: false,
     });
     expect(result.quality).toBeUndefined();
-    expect(result.verbose).toBe(false);
   });
 
   it('parses all arguments', () => {
     const args = ['-i', 'src', '-o', 'dist', '-q', '75', '-v'];
     const result = parseArguments(args);
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       input: 'src',
       output: 'dist',
       quality: 75,
       verbose: true,
+      selfReplace: false,
+      skipWarning: false,
     });
   });
 
@@ -75,6 +80,27 @@ describe('parseArguments', () => {
     const args = ['--input', 'src', '--output', 'dist', '--quality', '150'];
     const result = parseArguments(args);
     expect(result.quality).toBe(100);
+    expect(result.selfReplace).toBe(false);
+  });
+
+  it('supports self replacing flag', () => {
+    const args = ['--input', 'src', '--self'];
+    const result = parseArguments(args);
+    expect(result.output).toBe('src');
+    expect(result.selfReplace).toBe(true);
+  });
+
+  it('detects self replacing when output matches input', () => {
+    const args = ['--input', 'src', '--output', 'src'];
+    const result = parseArguments(args);
+    expect(result.selfReplace).toBe(true);
+  });
+
+  it('rejects using self flag with explicit output', () => {
+    const args = ['--input', 'src', '--output', 'dist', '--self'];
+    expect(() => parseArguments(args)).toThrow(
+      'The --self option cannot be used together with --output.'
+    );
   });
 });
 
@@ -83,7 +109,7 @@ describe('configure', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockFs.stat.mockResolvedValue({ isDirectory: () => true } as any);
+    mockFs.stat.mockResolvedValue({ isDirectory: () => true } as unknown as Stats);
     mockFs.readdir.mockResolvedValue([]);
     mockFs.mkdir.mockResolvedValue(undefined);
   });
@@ -132,5 +158,30 @@ describe('configure', () => {
     expect(second.filesProcessed).toBe(0);
     expect(second.output).toBe('dist-2');
     expect(second.summary.destinationLine).toContain('dist-2');
+  });
+
+  it('does not unlink files when self replacing', async () => {
+    const fileEntries = [{ name: 'image.png', isDirectory: () => false }];
+    mockFs.readdir.mockResolvedValue(
+      fileEntries as unknown as Awaited<ReturnType<typeof fs.readdir>>
+    );
+    mockFs.readFile.mockResolvedValue(Buffer.from('original'));
+    mockFs.writeFile.mockResolvedValue(undefined);
+
+    await configure('src', 'src');
+
+    expect(mockFs.unlink).not.toHaveBeenCalled();
+    expect(mockFs.copyFile).not.toHaveBeenCalled();
+  });
+
+  it('skips copying unsupported files when self replacing', async () => {
+    const fileEntries = [{ name: 'notes.txt', isDirectory: () => false }];
+    mockFs.readdir.mockResolvedValue(
+      fileEntries as unknown as Awaited<ReturnType<typeof fs.readdir>>
+    );
+
+    await configure('src', 'src');
+
+    expect(mockFs.copyFile).not.toHaveBeenCalled();
   });
 });

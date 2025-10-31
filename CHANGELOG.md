@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.2.0]
+
+### Added
+
+- Self-replacement (in-place) optimization mode for the CLI:
+  - Use `--self`/`--in-place`/`-s` to overwrite files inside the input directory.
+  - When enabled, the CLI shows a destructive warning and asks for confirmation.
+  - Use `--skip-warning`/`--yes`/`--force`/`-y` to skip the prompt (for non-interactive runs).
+  - Self-replacement is also detected automatically when `--input` and `--output` resolve to the same directory.
+  - Output now supports color for easier visualization.
+
+### Behavior
+
+- In self-replacement mode, the tool does not pre-delete any files; it overwrites processed files as it goes.
+- Unsupported files are left untouched in self-replace mode (they are not copied).
+
+### Internals
+
+- The CLI uses a dynamic import for `node:readline` to ensure proper bundling and runtime behavior.
+- `node:readline` marked as external in the build config.
+
 ## [1.1.0] - 2025-10-29
 
 ### Added
@@ -26,5 +47,6 @@
 
 - Initial public release: CLI and programmatic API for optimizing common asset formats (PNG/JPG/WEBP/AVIF, SVG, JSON; browser-only MP4/WebM via `mediabunny`).
 
+[1.2.0]: https://github.com/Fenekito/asset-optimizer/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Fenekito/asset-optimizer/releases/tag/v1.1.0
-[1.0.0]: https://github.com/Fenekito/asset-optimizer/releases/tag/v1.0.0
+[1.0.0]: https://github.com/Fenekito/asset-optimizer/releases/tag/
